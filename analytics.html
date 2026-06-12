@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+```
+<title>Analytics Dashboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="sidebar">
+
+    <h2>EduTrack Pro</h2>
+
+    <a href="index.html">Dashboard</a>
+    <a href="students.html">Students</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="results.html">Results</a>
+    <a href="analytics.html">Analytics</a>
+
+    <button id="themeBtn">
+        Dark Mode
+    </button>
+
+</div>
+
+<div class="content">
+
+    <h1>Analytics Dashboard</h1>
+
+    <div class="stats">
+
+        <div class="card">
+            <h3>Total Students</h3>
+            <p id="studentCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Attendance Records</h3>
+            <p id="attendanceCount">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Results</h3>
+            <p id="resultCount">0</p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="chart-container">
+        <canvas id="attendanceChart"></canvas>
+    </div>
+
+    <br>
+
+    <div class="chart-container">
+        <canvas id="resultsChart"></canvas>
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+let students =
+JSON.parse(
+localStorage.getItem("students")
+) || [];
+
+let attendance =
+JSON.parse(
+localStorage.getItem("attendance")
+) || [];
+
+let results =
+JSON.parse(
+localStorage.getItem("results")
+) || [];
+
+document.getElementById(
+"studentCount"
+).innerText = students.length;
+
+document.getElementById(
+"attendanceCount"
+).innerText = attendance.length;
+
+document.getElementById(
+"resultCount"
+).innerText = results.length;
+
+let present =
+attendance.filter(
+a => a.status === "Present"
+).length;
+
+let absent =
+attendance.filter(
+a => a.status === "Absent"
+).length;
+
+let late =
+attendance.filter(
+a => a.status === "Late"
+).length;
+
+new Chart(
+document.getElementById(
+"attendanceChart"
+),
+{
+type:"doughnut",
+
+data:{
+labels:[
+"Present",
+"Absent",
+"Late"
+],
+
+datasets:[{
+data:[
+present,
+absent,
+late
+]
+}]
+}
+});
+
+let grades = {
+"A+":0,
+"A":0,
+"B":0,
+"C":0,
+"D":0
+};
+
+results.forEach(result=>{
+
+if(grades[result.grade] !== undefined){
+
+grades[result.grade]++;
+
+}
+
+});
+
+new Chart(
+document.getElementById(
+"resultsChart"
+),
+{
+type:"bar",
+
+data:{
+labels:[
+"A+",
+"A",
+"B",
+"C",
+"D"
+],
+
+datasets:[{
+
+label:"Students",
+
+data:[
+grades["A+"],
+grades["A"],
+grades["B"],
+grades["C"],
+grades["D"]
+]
+
+}]
+}
+});
+
+</script>
+
+<script src="js/theme.js"></script>
+
+</body>
+
+</html>
