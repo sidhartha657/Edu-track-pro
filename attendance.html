@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Attendance Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="sidebar">
+
+    <h2>EduTrack Pro</h2>
+
+    <a href="index.html">Dashboard</a>
+    <a href="students.html">Students</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="results.html">Results</a>
+    <a href="analytics.html">Analytics</a>
+
+    <button id="themeBtn">Dark Mode</button>
+
+</div>
+
+<div class="content">
+
+    <h1>Attendance Management</h1>
+
+    <input
+    id="studentName"
+    placeholder="Student Name">
+
+    <select id="status">
+        <option>Present</option>
+        <option>Absent</option>
+        <option>Late</option>
+    </select>
+
+    <button onclick="saveAttendance()">
+        Save Attendance
+    </button>
+
+    <hr>
+
+    <div id="attendanceList"></div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+let attendance =
+JSON.parse(localStorage.getItem("attendance"))
+|| [];
+
+function saveAttendance(){
+
+    let studentName =
+    document.getElementById("studentName")
+    .value.trim();
+
+    let status =
+    document.getElementById("status")
+    .value;
+
+    if(studentName === ""){
+
+        alert("Please enter student name");
+        return;
+
+    }
+
+    attendance.push({
+        name: studentName,
+        status: status,
+        date: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem(
+        "attendance",
+        JSON.stringify(attendance)
+    );
+
+    document.getElementById(
+        "studentName"
+    ).value = "";
+
+    showAttendance();
+
+}
+
+function showAttendance(){
+
+    let html = "";
+
+    attendance.forEach(record=>{
+
+        html += `
+        <div class="card">
+            <h3>${record.name}</h3>
+            <p>Status: ${record.status}</p>
+            <p>Date: ${record.date}</p>
+        </div>
+        `;
+
+    });
+
+    if(html === ""){
+
+        html = `
+        <div class="card">
+            <h3>No Attendance Records</h3>
+        </div>
+        `;
+
+    }
+
+    document.getElementById(
+        "attendanceList"
+    ).innerHTML = html;
+
+}
+
+showAttendance();
+
+</script>
+
+<script src="js/theme.js"></script>
+
+</body>
+
+</html>
