@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+```
+<title>Results Management</title>
+
+<link rel="stylesheet" href="css/style.css">
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="sidebar">
+
+    <h2>EduTrack Pro</h2>
+
+    <a href="index.html">Dashboard</a>
+    <a href="students.html">Students</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="results.html">Results</a>
+    <a href="analytics.html">Analytics</a>
+
+    <button id="themeBtn">
+        Dark Mode
+    </button>
+
+</div>
+
+<div class="content">
+
+    <h1>Results Management</h1>
+
+    <input
+    id="studentName"
+    placeholder="Student Name">
+
+    <br><br>
+
+    <input
+    type="number"
+    id="math"
+    placeholder="Math Marks">
+
+    <input
+    type="number"
+    id="science"
+    placeholder="Economics Marks">
+
+    <input
+    type="number"
+    id="english"
+    placeholder="English Marks">
+
+    <input
+    type="number"
+    id="computer"
+    placeholder="Computer Marks">
+
+    <br><br>
+
+    <button onclick="saveResult()">
+        Calculate Result
+    </button>
+
+    <hr>
+
+    <div id="resultList"></div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+let results =
+JSON.parse(
+localStorage.getItem("results")
+) || [];
+
+function saveResult(){
+
+    let studentName =
+    document.getElementById(
+    "studentName"
+    ).value.trim();
+
+    let math =
+    Number(
+    document.getElementById(
+    "math"
+    ).value
+    );
+
+    let science =
+    Number(
+    document.getElementById(
+    "science"
+    ).value
+    );
+
+    let english =
+    Number(
+    document.getElementById(
+    "english"
+    ).value
+    );
+
+    let computer =
+    Number(
+    document.getElementById(
+    "computer"
+    ).value
+    );
+
+    if(studentName === ""){
+
+        alert(
+        "Enter student name"
+        );
+
+        return;
+
+    }
+
+    let total =
+    math +
+    science +
+    english +
+    computer;
+
+    let percentage =
+    (total / 400) * 100;
+
+    let grade = "D";
+
+    if(percentage >= 90){
+        grade = "A+";
+    }
+    else if(percentage >= 80){
+        grade = "A";
+    }
+    else if(percentage >= 70){
+        grade = "B";
+    }
+    else if(percentage >= 60){
+        grade = "C";
+    }
+
+    results.push({
+
+        name: studentName,
+
+        total: total,
+
+        percentage:
+        percentage.toFixed(2),
+
+        grade: grade
+
+    });
+
+    localStorage.setItem(
+
+    "results",
+
+    JSON.stringify(results)
+
+    );
+
+    document.getElementById("studentName").value="";
+    document.getElementById("math").value="";
+    document.getElementById("science").value="";
+    document.getElementById("english").value="";
+    document.getElementById("computer").value="";
+
+    showResults();
+
+}
+
+function showResults(){
+
+    let html = "";
+
+    results.forEach(result => {
+
+        html += `
+
+        <div class="card">
+
+            <h3>${result.name}</h3>
+
+            <p>Total: ${result.total}</p>
+
+            <p>Percentage: ${result.percentage}%</p>
+
+            <p>Grade: ${result.grade}</p>
+
+        </div>
+
+        `;
+
+    });
+
+    if(html === ""){
+
+        html = `
+        <div class="card">
+            <h3>No Results Found</h3>
+        </div>
+        `;
+
+    }
+
+    document.getElementById(
+    "resultList"
+    ).innerHTML = html;
+
+}
+
+showResults();
+
+</script>
+
+<script src="js/theme.js"></script>
+
+</body>
+
+</html>
